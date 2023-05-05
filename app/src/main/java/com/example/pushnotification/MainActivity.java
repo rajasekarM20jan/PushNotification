@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        init();
+    }
+
+    void init(){
         subscribeButton.setOnClickListener(l->{
             try{
                 String topic=topicET.getText().toString();
@@ -55,31 +59,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-                Uri mySound= new Uri.Builder().scheme("android.resource").authority(MainActivity.this.getResources().getResourcePackageName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceTypeName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceEntryName(R.raw.custom_msg)).build();
-                Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.custom_msg);
-                notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                String NOTIFICATION_CHANNEL_ID = "pushnotificationtest";
+        Uri mySound= new Uri.Builder().scheme("android.resource").authority(MainActivity.this.getResources().getResourcePackageName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceTypeName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceEntryName(R.raw.custom_msg)).build();
+        Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.custom_msg);
+        notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "pushnotificationtest";
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                {
-                    notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,"Notification",NotificationManager.IMPORTANCE_DEFAULT);
-                    notificationChannel.setDescription("code sphere");
-                    notificationChannel.enableLights(true);
-                    notificationChannel.setLightColor(Color.BLUE);
-                    notificationChannel.enableLights(true);
-                    AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                            .build();
-                    AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                    int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_NOTIFICATION, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,"Notification",NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("code sphere");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.BLUE);
+            notificationChannel.enableLights(true);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .build();
+            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_NOTIFICATION, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
-                    if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                        notificationChannel.setSound(mySound, audioAttributes);
-                        notificationManager.createNotificationChannel(notificationChannel);
-                    }
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                notificationChannel.setSound(null, audioAttributes);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
 
-                }
+        }
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        onResume();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
+    }
 }
