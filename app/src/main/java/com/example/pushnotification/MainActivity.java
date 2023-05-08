@@ -41,16 +41,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         subscribeButton=findViewById(R.id.subscribeButton);
         topicET=findViewById(R.id.topicET);
-
-
-
         init();
     }
 
     void init(){
+        //for subscribing specific topic
         subscribeButton.setOnClickListener(l->{
             try{
-                String topic=topicET.getText().toString();
+                String topic=topicET.getText().toString().trim();
                 Toast.makeText(this, "Subscribed to "+topic, Toast.LENGTH_SHORT).show();
                 topicET.setText("");
                 FirebaseMessaging.getInstance().subscribeToTopic(topic);
@@ -58,12 +56,12 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-
         Uri mySound= new Uri.Builder().scheme("android.resource").authority(MainActivity.this.getResources().getResourcePackageName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceTypeName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceEntryName(R.raw.custom_msg)).build();
-        Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.custom_msg);
+        /*Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.custom_msg);*/
         notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "pushnotificationtest";
 
+        //Creating the notification channel (Use the same ID as used in manifest file for getting custom sounds.
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,"Notification",NotificationManager.IMPORTANCE_HIGH);
@@ -84,17 +82,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        onResume();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        init();
     }
 
     @Override

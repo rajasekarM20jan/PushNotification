@@ -38,29 +38,47 @@ import java.util.TimerTask;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    Uri soundUri,mySound;
 
     private static final String TAG = "MyFirebaseMessagingService";
-    NotificationReceiver myReceiver;
+
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        myReceiver= new NotificationReceiver();
-        IntentFilter intentFilter = new IntentFilter("com.example.MY_ACTION");
-        registerReceiver(myReceiver, intentFilter);
 
         String title=remoteMessage.getNotification().getTitle();
         String body=remoteMessage.getNotification().getBody();
 
-        Intent intent = new Intent("com.example.MY_ACTION");
-        intent.putExtra("title",title);
-        intent.putExtra("body",body);
-        sendBroadcast(intent);
-
-
+        showNotification(title,body);
     }
+    public void showNotification(String title,String body) {
+        mySound= new Uri.Builder().scheme("android.resource").authority(this.getResources().getResourcePackageName(R.raw.custom_msg)).appendPath(this.getResources().getResourceTypeName(R.raw.custom_msg)).appendPath(this.getResources().getResourceEntryName(R.raw.custom_msg)).build();
+        Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.custom_msg);
+        String NOTIFICATION_CHANNEL_ID = "pushnotificationtest";
 
+        Intent resultIntent = new Intent(Intent.ACTION_VIEW,Uri.parse(body));
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE);
 
+        Notification notification = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.notification)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setSound(mySound)
+                .setDefaults(Notification.DEFAULT_LIGHTS)
+                .setContentIntent(resultPendingIntent)
+                .setContentInfo("Info").build();
+        notification.sound=mySound;
+        notificationManager.notify(new Random().nextInt(), notification);
+    }
 
 
     @Override

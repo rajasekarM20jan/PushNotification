@@ -30,13 +30,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PushNotification"
         tools:targetApi="31">
-        <activity
-            android:name=".MyNotificationDisplay"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
 
         <service
             android:name=".MyFirebaseMessagingService"
