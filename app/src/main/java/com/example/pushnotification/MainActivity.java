@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,"Notification",NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,"Notification",NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setDescription("code sphere");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.BLUE);
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_NOTIFICATION, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                notificationChannel.setSound(null, audioAttributes);
+                notificationChannel.setSound(mySound, audioAttributes);
                 notificationManager.createNotificationChannel(notificationChannel);
             }
 

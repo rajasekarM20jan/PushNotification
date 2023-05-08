@@ -11,6 +11,7 @@ import android.app.TaskStackBuilder;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -36,24 +37,31 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    Uri soundUri,mySound;
+
 
     private static final String TAG = "MyFirebaseMessagingService";
-
+    NotificationReceiver myReceiver;
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        mySound= new Uri.Builder().scheme("android.resource").authority(MyFirebaseMessagingService.this.getResources().getResourcePackageName(R.raw.custom_msg)).appendPath(MyFirebaseMessagingService.this.getResources().getResourceTypeName(R.raw.custom_msg)).appendPath(MyFirebaseMessagingService.this.getResources().getResourceEntryName(R.raw.custom_msg)).build();
+        myReceiver= new NotificationReceiver();
+        IntentFilter intentFilter = new IntentFilter("com.example.MY_ACTION");
+        registerReceiver(myReceiver, intentFilter);
 
         String title=remoteMessage.getNotification().getTitle();
         String body=remoteMessage.getNotification().getBody();
-        Intent intent=new Intent(this,SplashScreen.class);
+
+        Intent intent = new Intent("com.example.MY_ACTION");
         intent.putExtra("title",title);
         intent.putExtra("body",body);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        sendBroadcast(intent);
+
+
     }
+
+
+
 
     @Override
     public void onNewToken(@NonNull String s) {
