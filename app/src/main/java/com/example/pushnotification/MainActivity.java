@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void init(){
-        //for subscribing specific topic
+        //button for subscribing specific topic that is updated in the firebase.
         subscribeButton.setOnClickListener(l->{
             try{
                 String topic=topicET.getText().toString().trim();
@@ -56,19 +56,23 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
+        //Building sound as uri from RAW folder
         Uri mySound= new Uri.Builder().scheme("android.resource").authority(MainActivity.this.getResources().getResourcePackageName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceTypeName(R.raw.custom_msg)).appendPath(MainActivity.this.getResources().getResourceEntryName(R.raw.custom_msg)).build();
         /*Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.custom_msg);*/
+        //Creating the notification manager
         notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "pushnotificationtest";
 
         //Creating the notification channel (Use the same ID as used in manifest file for getting custom sounds.
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
+            //creating new notification channel
             notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,"Notification",NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setDescription("code sphere");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.BLUE);
             notificationChannel.enableLights(true);
+            //create audio attributes for notification channel
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_NOTIFICATION, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                //set notification channel with sound
                 notificationChannel.setSound(mySound, audioAttributes);
                 notificationManager.createNotificationChannel(notificationChannel);
             }

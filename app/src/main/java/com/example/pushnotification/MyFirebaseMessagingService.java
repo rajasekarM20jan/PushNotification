@@ -49,7 +49,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String title=remoteMessage.getNotification().getTitle();
         String body=remoteMessage.getNotification().getBody();
-
+        //calling the method for showing notification
         showNotification(title,body);
     }
     public void showNotification(String title,String body) {
@@ -65,6 +65,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE);
 
+        //Creating the notification using builder
         Notification notification = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
@@ -76,10 +77,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setContentIntent(resultPendingIntent)
                 .setContentInfo("Info").build();
+
+        //setting notification sound using notification.sound
         notification.sound=mySound;
+
+        //calling the notify method using notification manager.
         notificationManager.notify(new Random().nextInt(), notification);
     }
-
 
     @Override
     public void onNewToken(@NonNull String s) {
